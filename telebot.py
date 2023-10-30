@@ -66,5 +66,22 @@ async def helper(message: types.Message):
     """
     await message.reply(help_command)
 
+@dispatcher.message_handler()
+async def chatgpt(message: types.Message):
+    """
+    This function process the user input and genrate a responce using chatgpt API. 
+    """
+    print(f">>> USER: \n\t{message.text}")
+    response = openai.ChatCompletion.create(
+        model = Model_Name,
+        messages = [
+            {"role":"assistant","content":reference.responce},
+            {"role":"user", "content":message.text}
+        ]
+    )
+    reference.responce = response['choices'][0]['message']['content']
+    print(f">>> chatgpt: \n\t{reference.responce}")
+    await bot.send_message(chat_id = message.chat.id,text = reference.responce)
+
 if __name__ == "__main__":
     executor.start_polling(dp,skip_updates=True)
